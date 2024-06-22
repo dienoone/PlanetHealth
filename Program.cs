@@ -13,10 +13,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CORSPolicy",
         builder => builder
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowAnyOrigin()
-            .AllowCredentials());
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((hosts) => true));
 });
 
 var app = builder.Build();
