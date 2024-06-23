@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using PlantHealth.Api.Constants;
 
 namespace PlantHealth.Api.Hubs;
 
@@ -11,11 +12,31 @@ public class Detection : Hub
         _logger = logger;
     }
 
-    public override Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
         
+        var queryParams = Context.GetHttpContext()!.Request.Query;
+
+        // Access specific query parameters
+        if (queryParams.ContainsKey("type"))
+        {
+            var paramValue = queryParams["type"].ToString();
+            _logger.LogWarning($"param value ${paramValue}");
+            // Use paramValue as needed
+
+            switch(paramValue)
+            {
+                case "raspberrypi":
+                    await Groups.AddToGroupAsync(Context.ConnectionId, GroupName.RASPBERRYPI);
+                    break;
+                case "flutter":
+                    await Groups.AddToGroupAsync(Context.ConnectionId, GroupName.FLUTTER);
+                    break;
+            }
+        }
+
+        await base.OnConnectedAsync();
         _logger.LogWarning($"A user is connection with a connection id ${Context.ConnectionId}");
-        return base.OnConnectedAsync();
     }
 
     public async Task SendMessage(string message)
@@ -25,10 +46,10 @@ public class Detection : Hub
 
 
     // update image will be class by the rasperbyi:
-    public async Task UpdateFile(string file, string fileContent)
+    public async Task UpdateFile(string fileName, byte[] fileData)
     {
-        Console.WriteLine(file);
-        Console.WriteLine(fileContent);
+        Console.WriteLine(fileName);
+        Console.WriteLine(fileData);
         await Clients.All.SendAsync("FileUploaded", "ras");
     }
 

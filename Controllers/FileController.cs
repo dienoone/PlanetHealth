@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using PlantHealth.Api.Hubs;
+using PlantHealth.Api.Constants;
 
 namespace PlantHealth.Api.Controllers;
 
@@ -6,10 +9,31 @@ namespace PlantHealth.Api.Controllers;
 [Route("api/[controller]")]
 public class FileController : ControllerBase
 {
-    [HttpPost]
-    public IActionResult UpdateFile(IFormFile file)
+    private readonly IHubContext<Detection> _detectionHubContext;
+
+    public FileController(IHubContext<Detection> detectionHubContext)
     {
-        var data = file.FileName;
+       _detectionHubContext = detectionHubContext; 
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateFile(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("File is empty or not provided.");
+        }
+
+        // Read the file content into a byte array
+        using (var ms = new MemoryStream())
+        {
+            await file.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+
+            // Send the file bytes to SignalR clients
+            await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveFile", fileBytes);
+        }
+        
         return Ok("Hello from the server!!");
     }
 }
