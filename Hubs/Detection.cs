@@ -9,10 +9,14 @@ namespace PlantHealth.Api.Hubs;
 public class Detection : Hub 
 {
     private ILogger<Detection> _logger;
+    private readonly IWebHostEnvironment _env;
 
-    public Detection(ILogger<Detection> logger)
+    public Detection(
+        ILogger<Detection> logger,
+        IWebHostEnvironment env)
     {
         _logger = logger;
+        _env = env;
     }
 
     public override async Task OnConnectedAsync()
@@ -62,9 +66,12 @@ public class Detection : Hub
     /// <returns></returns>
     public async Task GetImage()
     {
-        // Path to the image file
-        string imagePath = "Hubs/leave.jpg";
+        Console.WriteLine("hit");
 
+        // Construct the full path to the image file
+        string imagePath = Path.Combine(_env.ContentRootPath, "Hubs", "leave.jpg");
+        Console.WriteLine(imagePath);
+        _logger.LogWarning(imagePath);
         // Check if the file exists
         if (File.Exists(imagePath))
         {
