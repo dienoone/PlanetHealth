@@ -21,12 +21,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// middlewares:
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("CORSPolicy");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapHub<Detection>("/detection");
+app.MapHub<Camera>("/camera");
 
 app.UseAuthorization();
 

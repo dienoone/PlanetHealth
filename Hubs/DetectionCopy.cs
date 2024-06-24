@@ -3,14 +3,15 @@ using PlantHealth.Api.Constants;
 
 namespace PlantHealth.Api.Hubs;
 
+
 /// <summary>
-/// this is just for testing flutter team;
+/// this is the original hub.... 
 /// </summary>
-public class Detection : Hub 
+public class DetectionCopy : Hub 
 {
     private ILogger<Detection> _logger;
 
-    public Detection(ILogger<Detection> logger)
+    public DetectionCopy(ILogger<Detection> logger)
     {
         _logger = logger;
     }
@@ -62,24 +63,7 @@ public class Detection : Hub
     /// <returns></returns>
     public async Task GetImage()
     {
-        // Path to the image file
-        string imagePath = "Hubs/leave.jpg";
-
-        // Check if the file exists
-        if (File.Exists(imagePath))
-        {
-            _logger.LogWarning("file exists already...");
-            // Read the image as bytes
-            byte[] imageBytes = await File.ReadAllBytesAsync(imagePath);
-
-            // Send the bytes to the clients in the group "RASPBERRYPI"
-            await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveImage", imageBytes);
-        }
-        else
-        {
-            // Handle the case where the file does not exist
-            await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveImage", null);
-        }
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("startcapture");
     }
 
 

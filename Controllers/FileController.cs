@@ -31,7 +31,7 @@ public class FileController : ControllerBase
             var fileBytes = ms.ToArray();
 
             // Send the file bytes to SignalR clients
-            await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveFile", fileBytes);
+            await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveImage", fileBytes, file.FileName);
         }
         
         return Ok("Hello from the server!!");
