@@ -146,21 +146,6 @@ This code sets up a SignalR connection, registers a method to handle incoming im
 ### Another example to test
 
 - this example is all about test and understand how the connectoin will work:
-- you will need this method in the implementation
-  
-```dart
-void _getImageFromRaspberrypi(List<Object> parameters) {
-  // Check if the parameters are not null.
-  if (parameters != null) {
-    print("Server invoked the method with parameters: $parameters");
-    // This will help you to display the image.
-    final imageBytes = parameters[0] as List<int>;
-    Image.memory(Uint8List.fromList(imageBytes));
-  } else {
-    print("No image received");
-  }
-}
-```
 
 ```dart
 // Import the library.
