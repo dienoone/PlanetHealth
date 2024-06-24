@@ -142,3 +142,50 @@ class _SignalRExampleState extends State<SignalRExample> {
 ```
 
 This code sets up a SignalR connection, registers a method to handle incoming images, and invokes a method to request an image from the server
+
+### Another example to test
+
+- this example is all about test and understand how the connectoin will work:
+- you will need this method in the implementation
+  
+```dart
+void _getImageFromRaspberrypi(List<Object> parameters) {
+  // Check if the parameters are not null.
+  if (parameters != null) {
+    print("Server invoked the method with parameters: $parameters");
+    // This will help you to display the image.
+    final imageBytes = parameters[0] as List<int>;
+    Image.memory(Uint8List.fromList(imageBytes));
+  } else {
+    print("No image received");
+  }
+}
+```
+
+```dart
+// Import the library.
+import 'package:signalr_netcore/signalr_client.dart';
+
+// The location of the SignalR Server.
+final serverUrl = "https://planethealth.azurewebsites.net/detection?type=flutter";
+final hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
+
+// When the connection is closed, print out a message to the console.
+hubConnection.onclose((error) => print("Connection Closed"));
+
+// Register a method to handle the response from the server.
+hubConnection.on("ReceiveMessage", _getMessageFromRaspberrypi);
+
+void _getMessageFromRaspberrypi(List<Object> parameters) {
+  // You will receive a message: "Hello from the flutter"
+  print("Server invoked the method with parameters: $parameters");
+}
+
+// Start the connection.
+await hubConnection.start();
+
+// Invoke a method to send a message to the Raspberry Pi.
+await hubConnection.invoke("SendMessage", args: <Object>["Hello from the flutter"]);
+```
+
+This is just a baisc example to understand more!!
