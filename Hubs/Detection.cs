@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.SignalR;
 using PlantHealth.Api.Constants;
-using PlantHealth.Api.Models;
 
 namespace PlantHealth.Api.Hubs;
 
-/// <summary>
-/// this is just for testing flutter team;
-/// </summary>
 public class Detection : Hub 
 {
     private ILogger<Detection> _logger;
@@ -30,7 +26,6 @@ public class Detection : Hub
         {
             var paramValue = queryParams["type"].ToString();
             _logger.LogWarning($"param value ${paramValue}");
-            // Use paramValue as needed
 
             switch(paramValue)
             {
@@ -73,16 +68,14 @@ public class Detection : Hub
 
         // Construct the full path to the image file
         string imagePath = Path.Combine(_env.ContentRootPath, "Hubs", "leave.jpg");
-        Console.WriteLine(imagePath);
-        _logger.LogWarning(imagePath);
+
         // Check if the file exists
         if (File.Exists(imagePath))
         {
-            _logger.LogWarning("file exists already...");
             // Read the image as bytes
             byte[] imageBytes = await File.ReadAllBytesAsync(imagePath);
 
-            // Send the bytes to the clients in the group "RASPBERRYPI"
+            // Send the bytes to the clients in the group "FLUTTER"
             await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveImage", imageBytes);
         }
         else
@@ -143,12 +136,12 @@ public class Detection : Hub
     /// </summary>
     /// <param name="chunk"></param>
     /// <returns></returns>
-    public async Task UploadLiveStream(UploadFileChunk chunk)
+    public async Task UploadLiveStream(string chunk, int index, int totalChunks)
     {
-        Console.WriteLine("Received frame...");
         try
         {
-            await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveFrame", chunk);
+            Console.WriteLine("here");
+            await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveFrame", chunk, index, totalChunks);
         }
         catch (Exception ex)
         {
