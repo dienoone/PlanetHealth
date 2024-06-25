@@ -73,23 +73,31 @@ print("Result: '$resultWithParam'");
 - Here is a complete example of connecting to the SignalR hub, registering a method, and invoking a method:
 
 ```dart
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: SignalRExample(),
     );
   }
 }
 
 class SignalRExample extends StatefulWidget {
+  const SignalRExample({super.key});
+
   @override
-  _SignalRExampleState createState() => _SignalRExampleState();
+  State<SignalRExample> createState() => _SignalRExampleState();
+
 }
 
 class _SignalRExampleState extends State<SignalRExample> {
@@ -103,25 +111,47 @@ class _SignalRExampleState extends State<SignalRExample> {
   }
 
   void connectToSignalR() async {
-    hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
+    try {
+      hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
 
-    hubConnection.onclose((error) => print("Connection Closed"));
+      hubConnection.onclose(({error}) {
+        debugPrint('Connection closed: ${error?.toString()}');
+        // Attempt to reconnect after a delay
+        Future.delayed(const Duration(seconds: 5), () {
+          if (hubConnection.state != HubConnectionState.Connected) {
+            connectToSignalR();
+          }
+        });
+      });
 
-    hubConnection.on("ReceiveImage", _getImageFromRaspberrypi);
+      hubConnection.onreconnecting(({error}) {
+        debugPrint('Reconnecting: ${error?.toString()}');
+      });
 
-    await hubConnection.start();
-    await hubConnection.invoke("GetImage");
+      hubConnection.onreconnected(({connectionId}) {
+        debugPrint('Reconnected with connection ID: $connectionId');
+      });
+
+      hubConnection.on("ReceiveImage", _getImageFromRaspberrypi);
+
+      await hubConnection.start();
+      debugPrint('Connection started');
+      await hubConnection.invoke("GetImage");
+    } on Exception catch (e) {
+      debugPrint('Connection error: ${e.toString()}');
+    }
   }
 
-  void _getImageFromRaspberrypi(List<Object>? parameters) {
+  void _getImageFromRaspberrypi(List<Object?>? parameters) {
     if (parameters != null) {
-      print("Server invoked the method with parameters: $parameters");
-      final imageBytes = parameters[0] as List<int>;
+      debugPrint("Server invoked the method with parameters: $parameters");
+      final base64String = parameters[0] as String;
+      final imageBytes = base64Decode(base64String);
       setState(() {
         _image = Image.memory(Uint8List.fromList(imageBytes));
       });
     } else {
-      print("No image received");
+      debugPrint("No image received");
     }
   }
 
@@ -131,10 +161,10 @@ class _SignalRExampleState extends State<SignalRExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SignalR Example"),
+        title: const Text("SignalR Example"),
       ),
       body: Center(
-        child: _image ?? Text("No image received"),
+        child: _image ?? const Text("No image received"),
       ),
     );
   }
