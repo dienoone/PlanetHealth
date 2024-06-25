@@ -11,7 +11,7 @@ First, add the `signalr_netcore` package to your `pubspec.yaml` file:
 dependencies:
   flutter:
     sdk: flutter
-  signalr_netcore: ^0.1.0
+  signalr_netcore: ^1.3.7
 ```
 
 ## Connecting to the SignalR Hub
