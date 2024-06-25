@@ -16,8 +16,8 @@ public class FileController : ControllerBase
        _detectionHubContext = detectionHubContext; 
     }
 
-    [HttpPost]
-    public async Task<IActionResult> UpdateFile(IFormFile file)
+    [HttpPost("SendImage")]
+    public async Task<IActionResult> UpdateFile(IFormFile file, string methodName)
     {
         if (file == null || file.Length == 0)
         {
@@ -30,10 +30,19 @@ public class FileController : ControllerBase
             await file.CopyToAsync(ms);
             var fileBytes = ms.ToArray();
 
-            // Send the file bytes to SignalR clients
-            await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveImage", fileBytes, file.FileName);
+            switch(methodName.ToUpper())
+            {
+                case EventName.CAPTURE:
+                    await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("Capture", fileBytes);
+                    break;
+                case EventName.TAKE:
+                    await _detectionHubContext.Clients.Group(GroupName.FLUTTER).SendAsync("Take", fileBytes);
+                    break;
+                default:
+                    return BadRequest("Invalid event name!!");
+            }
         }
         
-        return Ok("Hello from the server!!");
+        return Ok();
     }
 }

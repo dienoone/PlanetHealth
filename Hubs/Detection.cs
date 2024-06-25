@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using PlantHealth.Api.Constants;
+using PlantHealth.Api.Models;
 
 namespace PlantHealth.Api.Hubs;
 
@@ -46,6 +47,8 @@ public class Detection : Hub
         _logger.LogWarning($"A user is connection with a connection id ${Context.ConnectionId}");
     }
 
+    #region Test Connections only
+
     /// <summary>
     /// This is only of test perpose with fullter, 
     /// TODO: Reomve this function!!
@@ -89,22 +92,100 @@ public class Detection : Hub
         }
     }
 
+    #endregion 
+   
+    #region Button One
 
-    // public async Task UploadFile(IFormFile file)
-    // {
-    //     await Clients.All.SendAsync("FormFile", "ras");
-    
-    // }
+    /// <summary>
+    /// [First button]
+    /// The flutter will invoke this method,
+    /// the time can be optional.
+    /// 
+    /// This raspberry pi will call the upload file controller.
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    public async Task InitCapture(int time = 15)
+    {
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("StartCapture", time);
+    }
+
+    #endregion
+
+    #region Button Two
+
+    /// <summary>
+    /// [Second button]
+    /// The flutter will invoke this method, to stop receive images.
+    /// </summary>
+    /// <returns></returns>
+    public async Task EndCapture()
+    {
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("StopCapture");
+    }
+
+    #endregion
+
+    #region Button Three
+
+    /// <summary>
+    /// The flutter will invoke this method, to get live stream.
+    /// </summary>
+    /// <returns></returns>
+    public async Task GetLiveStream()
+    {
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("StartLiveStream");
+    }
+
+    /// <summary>
+    /// The raspberry pi will invoke this method, to upload file stream, to 
+    /// flutter team.
+    /// </summary>
+    /// <param name="chunk"></param>
+    /// <returns></returns>
+    public async Task UploadLiveStream(UploadFileChunk chunk)
+    {
+        Console.WriteLine("Received frame...");
+        try
+        {
+            await Clients.Group(GroupName.FLUTTER).SendAsync("ReceiveFrame", chunk);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error processing image: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    #region Button Four
+
+    /// <summary>
+    /// The flutter will invoke this method, to capture an image,
+    /// during the live stream.
+    /// 
+    /// The raspberry pi will call the upload file controller.
+    /// </summary>
+    /// <returns></returns>
+    public async Task CaptureImage()
+    {
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("TakeImage");
+    }
 
 
-    // update image will be class by the rasperbyi:
-    // public async Task UpdateFile(string fileName, byte[] fileData)
-    // {
-    //     Console.WriteLine(fileName);
-    //     Console.WriteLine(fileData);
-    //     await Clients.All.SendAsync("FileUploaded", "ras");
-    // }
+    #endregion
 
+    #region Button Five
 
-    
+    /// <summary>
+    /// The flutter will invoke this mathod, to end receive live stream.
+    /// </summary>
+    /// <returns></returns>
+    public async Task StopLiveStream()
+    {
+        await Clients.Group(GroupName.RASPBERRYPI).SendAsync("EndLiveStream");
+    }
+
+    #endregion 
+
 }
