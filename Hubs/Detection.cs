@@ -98,7 +98,7 @@ public class Detection : Hub
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>
-    public async Task InitCapture(int time = 15)
+    public async Task InitCapture(int time)
     {
         await Clients.Group(GroupName.RASPBERRYPI).SendAsync("StartCapture", time);
     }

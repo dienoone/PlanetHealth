@@ -204,3 +204,7 @@ await hubConnection.invoke("SendMessage", args: <Object>["Hello from the flutter
 ```
 
 This is just a baisc example to understand more!!
+
+### You can see the full documentation of the integration
+
+[Full docs](Docs/readme.md)
