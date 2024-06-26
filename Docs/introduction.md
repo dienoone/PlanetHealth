@@ -154,3 +154,7 @@ class _SignalRConnectionState extends State<SignalRConnection> {
 ```
 
 By following these steps, you can establish a connection between your Flutter application and a SignalR server. This setup forms the foundation for implementing real-time features such as live chat, notifications, and data streaming.
+
+---
+
+Next [Image stream](./images-stream.md)

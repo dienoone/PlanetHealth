@@ -1,7 +1,7 @@
 # SignalR Client in Flutter
 
 This guide demonstrates how to use the `signalr_netcore` package to connect a Flutter application to a SignalR hub.
-You can visit the official Markdown Guide [here](https://pub.dev/packages/signalr_netcore).
+You can visit the official documentation guide [here](https://pub.dev/packages/signalr_netcore).
 
 ## Setup
 

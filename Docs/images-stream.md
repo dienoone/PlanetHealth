@@ -172,3 +172,9 @@ This code sets up a SignalR connection, registers methods to handle incoming ima
 ### Conclusion
 
 By following this guide, you can implement an image streaming feature in your Flutter application using SignalR. This includes setting up the SignalR connection, invoking methods to start and stop the stream, and handling incoming images from the server.
+
+---
+
+Previous: [Introduction](./introduction.md)
+
+Next: [Video stream](./video-stream.md)

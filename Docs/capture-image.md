@@ -150,3 +150,7 @@ If the Flutter application is using the live video stream feature, invoking the 
 ### Conclusion
 
 By following this guide, you can implement a single image capture feature in your Flutter application using SignalR. This includes setting up the SignalR connection, invoking the method to capture an image, and handling the incoming image from the server.
+
+---
+
+Previous: [Video stream](./video-stream.md)

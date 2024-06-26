@@ -168,3 +168,9 @@ This code sets up a SignalR connection, registers methods to handle incoming vid
 ### Conclusion
 
 By following this guide, you can implement a live video streaming feature in your Flutter application using SignalR. This includes setting up the SignalR connection, invoking methods to start and stop the stream, and handling incoming video frames from the server.
+
+---
+
+Previous: [Image stream](./images-stream.md)
+
+Next: [Capture a single image](capture-image.md)
