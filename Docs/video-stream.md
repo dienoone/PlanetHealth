@@ -4,7 +4,7 @@ This guide explains how to implement a live video streaming feature in a Flutter
 
 ## Starting the Live Stream
 
-To start the live stream, the Flutter application needs to invoke the GetLiveStream method. Here's how to do that:
+To start the live stream, the Flutter application needs to invoke the `GetLiveStream` method. Here's how to do that:
 
 ```dart
 // Invoke the method to start the live stream.
@@ -13,7 +13,7 @@ await hubConnection.invoke("GetLiveStream");
 
 ## Handling Incoming Video Frames
 
-The Raspberry Pi will invoke the UploadLiveStream method to send video frames. You need to handle these frames in the Flutter application. Here's how to register a method to handle the incoming frames:
+The Raspberry Pi will invoke the `UploadLiveStream` method to send video frames. You need to handle these frames in the Flutter application. Here's how to register a method to handle the incoming frames:
 
 ```dart
 // Register a method to handle the incoming video frames.
@@ -32,7 +32,7 @@ void _handleIncomingFrame(List<Object> parameters) {
 
 ## Stopping the Live Stream
 
-To stop the live stream, the Flutter application needs to invoke the StopLiveStream method. Here's how to do that:
+To stop the live stream, the Flutter application needs to invoke the `StopLiveStream` method. Here's how to do that:
 
 ```dart
 // Invoke the method to stop the live stream.
